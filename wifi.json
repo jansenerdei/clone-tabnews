@@ -1,0 +1,63 @@
+[
+  {
+    "ap_list": [
+      { "bssid": "84:0b:bb:ce:b9:28", "frequency": 2412, "signal_level": -52 },
+      { "bssid": "00:1a:3f:8a:02:8e", "frequency": 2427, "signal_level": -82 }
+    ],
+    "bssid": "84:0b:bb:ce:b9:28",
+    "signal_level": -52,
+    "ssid": "C3PO",
+    "wpa_auth": 7,
+    "wpa_cipher": 4
+  },
+  {
+    "ap_list": [
+      { "bssid": "54:6c:ac:06:37:4c", "frequency": 2437, "signal_level": -68 }
+    ],
+    "bssid": "54:6c:ac:06:37:4c",
+    "signal_level": -68,
+    "ssid": "C3PO-5G",
+    "wpa_auth": 7,
+    "wpa_cipher": 4
+  },
+  {
+    "ap_list": [
+      { "bssid": "40:0f:c1:80:bb:60", "frequency": 2462, "signal_level": -89 }
+    ],
+    "bssid": "40:0f:c1:80:bb:60",
+    "signal_level": -89,
+    "ssid": "MARTINS_2G80BB5C",
+    "wpa_auth": 7,
+    "wpa_cipher": 4
+  },
+  {
+    "ap_list": [
+      { "bssid": "dc:92:72:70:bd:f8", "frequency": 2447, "signal_level": -86 }
+    ],
+    "bssid": "dc:92:72:70:bd:f8",
+    "signal_level": -86,
+    "ssid": "MEDINA",
+    "wpa_auth": 7,
+    "wpa_cipher": 4
+  },
+  {
+    "ap_list": [
+      { "bssid": "5c:7d:7d:6e:5f:28", "frequency": 2452, "signal_level": -78 }
+    ],
+    "bssid": "5c:7d:7d:6e:5f:28",
+    "signal_level": -78,
+    "ssid": "Milene",
+    "wpa_auth": 7,
+    "wpa_cipher": 4
+  },
+  {
+    "ap_list": [
+      { "bssid": "10:98:5f:af:84:5f", "frequency": 2462, "signal_level": -82 }
+    ],
+    "bssid": "10:98:5f:af:84:5f",
+    "signal_level": -82,
+    "ssid": "Pretta",
+    "wpa_auth": 7,
+    "wpa_cipher": 4
+  }
+]
