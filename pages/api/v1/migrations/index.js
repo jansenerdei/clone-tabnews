@@ -15,6 +15,7 @@ export default async function migrations(request, response) {
     verbose: true,
     migrationsTable: "pgmigrations",
   };
+
   if (request.method === "GET") {
     console.log("Entrou no GET");
     const pendingMigrations = await migrationRunner(defaultMigrationsOptions);
@@ -37,6 +38,8 @@ export default async function migrations(request, response) {
     return response.status(200).json(migratedMigrations);
   }
   console.log(response);
+
+  await dbClient.end();
 
   return response.status(405).end();
 }
