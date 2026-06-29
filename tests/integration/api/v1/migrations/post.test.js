@@ -1,10 +1,9 @@
-import database from "infra/database.js";
 import orchestrator from "../orchestrator.js";
 import { describe } from "node_modules/eslint/lib/rule-tester/rule-tester.js";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
-  await database.query("drop schema public cascade; create schema public");
+  await orchestrator.clearDataBase();
 });
 
 describe("POST /api/v1/migrations", () => {
