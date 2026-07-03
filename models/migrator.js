@@ -33,7 +33,6 @@ async function runPendingMigrations() {
   try {
     dbClient = await database.getNewClient();
 
-    console.log("Entrou POST");
     const migratedMigrations = await migrationRunner({
       ...defaultMigrationsOptions,
       dbClient,
