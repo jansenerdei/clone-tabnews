@@ -6,7 +6,7 @@ const defaultMigrationsOptions = {
   dryRun: true,
   dir: resolve("infra", "migrations"),
   direction: "up",
-  verbose: true,
+  log: () => {},
   migrationsTable: "pgmigrations",
 };
 
@@ -33,7 +33,6 @@ async function runPendingMigrations() {
   try {
     dbClient = await database.getNewClient();
 
-    console.log("Entrou POST");
     const migratedMigrations = await migrationRunner({
       ...defaultMigrationsOptions,
       dbClient,
