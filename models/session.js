@@ -40,7 +40,6 @@ async function findOneValidByToken(sessionToken) {
 async function create(userId) {
   const token = crypto.randomBytes(48).toString("hex");
   const expiresAt = new Date(Date.now() + EXPIRATION_IN_MILISECONDS);
-  console.log(expiresAt);
   const newSession = await runInsertQuery(token, userId, expiresAt);
   return newSession;
 
