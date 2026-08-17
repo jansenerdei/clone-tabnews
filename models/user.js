@@ -94,32 +94,38 @@ async function findOneByUserEmail(email) {
   }
 }
 
-async function create(userInputValue) {
-  await validateUniqueUsername(userInputValue.username);
-  await validateUniqueEmail(userInputValue.email);
-  await hashPasswordInObject(userInputValue);
+async function create(userInputValues) {
+  await validateUniqueUsername(userInputValues.username);
+  await validateUniqueEmail(userInputValues.email);
+  await hashPasswordInObject(userInputValues);
+  injectDefaultFeaturesInObject(userInputValues);
 
-  const newUser = await runInsertQuery(userInputValue);
+  const newUser = await runInsertQuery(userInputValues);
   return newUser;
 
-  async function runInsertQuery(userInputValue) {
+  async function runInsertQuery(userInputValues) {
     const results = await database.query({
       text: `
           INSERT INTO 
-            users (username, email, password) 
+            users (username, email, password, features) 
           VALUES 
-            ($1, $2, $3)
+            ($1, $2, $3, $4)
           RETURNING
             *
           ;`,
       values: [
-        userInputValue.username,
-        userInputValue.email,
-        userInputValue.password,
+        userInputValues.username,
+        userInputValues.email,
+        userInputValues.password,
+        userInputValues.features,
       ],
     });
 
     return results.rows[0];
+  }
+
+  async function injectDefaultFeaturesInObject(userInputValues) {
+    userInputValues.features = ["read:activation_token"];
   }
 }
 
@@ -210,9 +216,9 @@ async function validateUniqueEmail(email) {
   }
 }
 
-async function hashPasswordInObject(userInputValue) {
-  const hashedPassword = await password.hash(userInputValue.password);
-  userInputValue.password = hashedPassword;
+async function hashPasswordInObject(userInputValues) {
+  const hashedPassword = await password.hash(userInputValues.password);
+  userInputValues.password = hashedPassword;
 }
 
 const user = {

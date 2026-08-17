@@ -31,10 +31,18 @@ describe("Use case: Registration Floww (all successful)", () => {
       id: createUserResponseBody.id,
       username: "RegistrationFlow",
       email: "registration.flow@email.com",
+      features: ["read:activation_token"],
       password: createUserResponseBody.password,
-      features: [],
       created_at: createUserResponseBody.created_at,
       updated_at: createUserResponseBody.updated_at,
     });
   });
+
+  test("Receive activation email", () => {});
+
+  test("Activate account", () => {});
+
+  test("Login", () => {});
+
+  test("Get user information", () => {});
 });
