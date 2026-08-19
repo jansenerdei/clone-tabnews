@@ -1,3 +1,4 @@
+import activation from "models/activation.js";
 import orchestrator from "../api/v1/orchestrator.js";
 
 beforeAll(async () => {
@@ -8,6 +9,8 @@ beforeAll(async () => {
 });
 
 describe("Use case: Registration Floww (all successful)", () => {
+  let createUserResponseBody;
+
   test("Create user account", async () => {
     const createUserResponse = await fetch(
       "http://localhost:3000/api/v1/users",
@@ -25,7 +28,7 @@ describe("Use case: Registration Floww (all successful)", () => {
     );
     expect(createUserResponse.status).toBe(201);
 
-    const createUserResponseBody = await createUserResponse.json();
+    createUserResponseBody = await createUserResponse.json();
 
     expect(createUserResponseBody).toEqual({
       id: createUserResponseBody.id,
@@ -38,11 +41,23 @@ describe("Use case: Registration Floww (all successful)", () => {
     });
   });
 
-  test("Receive activation email", () => {});
+  test("Receive activation email", async () => {
+    const lastEmail = await orchestrator.getLastEmail();
 
-  test("Activate account", () => {});
+    const activationToken = await activation.findOneByUserId(
+      createUserResponseBody.id,
+    );
 
-  test("Login", () => {});
+    expect(lastEmail.sender).toBe("<contato@email.com>");
+    expect(lastEmail.recipients[0]).toBe("<registration.flow@email.com>");
+    expect(lastEmail.subject).toBe("Ative seu cadastro no FinTab!");
+    expect(lastEmail.text).toContain("RegistrationFlow");
+    expect(lastEmail.text).toContain(activationToken.id);
+  });
 
-  test("Get user information", () => {});
+  test("Activate account", async () => {});
+
+  test("Login", async () => {});
+
+  test("Get user information", async () => {});
 });
