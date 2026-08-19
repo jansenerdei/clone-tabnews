@@ -2,6 +2,7 @@ import email from "infra/email.js";
 import database from "infra/database.js";
 import webserver from "infra/webserver.js";
 import { NotFoundError } from "infra/errors";
+import user from "./user";
 
 const EXPIRATION_IN_MILISECONDS = 60 * 15 * 1000;
 
@@ -75,10 +76,35 @@ async function findOneValidById(tokenId) {
   }
 }
 
+async function markTokenAsUsed(activationTokenId) {
+  const usedActivationToken = await database.query({
+    text: `
+    UPDATE
+      user_activation_tokens
+    SET
+      used_at = timezone('utc', now()),
+      updated_at = timezone('utc', now())
+    WHERE
+      id = $1
+    RETURNING
+      *
+    ;`,
+    values: [activationTokenId],
+  });
+  return usedActivationToken.rows[0];
+}
+
+async function activeUserByUserId(userId) {
+  const activatedUser = await user.setFeatures(userId, ["create:session"]);
+  return activatedUser;
+}
+
 const activation = {
   sendEmailToUser,
   create,
   findOneValidById,
+  markTokenAsUsed,
+  activeUserByUserId,
 };
 
 export default activation;
