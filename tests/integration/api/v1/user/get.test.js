@@ -16,6 +16,7 @@ describe("GET /api/v1/user", () => {
         username: "UserWithValidSession",
       });
 
+      const activatedUser = await orchestrator.activateUser(createdUser);
       const sessionObject = await orchestrator.createSession(createdUser.id);
 
       const response = await fetch("http://localhost:3000/api/v1/user", {
@@ -37,10 +38,10 @@ describe("GET /api/v1/user", () => {
         id: createdUser.id,
         username: "UserWithValidSession",
         email: createdUser.email,
+        features: ["create:session", "read:session"],
         password: createdUser.password,
-        features: ["read:activation_token"],
         created_at: createdUser.created_at.toISOString(),
-        updated_at: createdUser.updated_at.toISOString(),
+        updated_at: activatedUser.updated_at.toISOString(),
       });
 
       expect(uuidVersion(responseBody.id)).toBe(4);
@@ -80,13 +81,14 @@ describe("GET /api/v1/user", () => {
         username: "UserWithHalfwayExpiredSession",
       });
 
+      const activatedUser = await orchestrator.activateUser(createdUser);
       const sessionObject = await orchestrator.createSession(createdUser.id);
 
       jest.useRealTimers();
 
       const response = await fetch("http://localhost:3000/api/v1/user", {
         headers: {
-          cookie: `session_id=${sessionObject.token}`,
+          Cookie: `session_id=${sessionObject.token}`,
         },
       });
 
@@ -99,9 +101,9 @@ describe("GET /api/v1/user", () => {
         username: "UserWithHalfwayExpiredSession",
         email: createdUser.email,
         password: createdUser.password,
-        features: ["read:activation_token"],
+        features: ["create:session", "read:session"],
         created_at: createdUser.created_at.toISOString(),
-        updated_at: createdUser.updated_at.toISOString(),
+        updated_at: activatedUser.updated_at.toISOString(),
       });
 
       expect(uuidVersion(responseBody.id)).toBe(4);
@@ -140,7 +142,7 @@ describe("GET /api/v1/user", () => {
 
       const response = await fetch("http://localhost:3000/api/v1/user", {
         headers: {
-          Cookie: `session_id=${nonexistentToken}`,
+          cookie: `session_id=${nonexistentToken}`,
         },
       });
 
@@ -171,7 +173,7 @@ describe("GET /api/v1/user", () => {
 
       const response = await fetch("http://localhost:3000/api/v1/user", {
         headers: {
-          Cookie: `session_id=${sessionObject.token}`,
+          cookie: `session_id=${sessionObject.token}`,
         },
       });
 
