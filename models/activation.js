@@ -9,7 +9,9 @@ const EXPIRATION_IN_MILISECONDS = 60 * 15 * 1000;
 
 async function create(userId) {
   const expiresAt = new Date(Date.now() + EXPIRATION_IN_MILISECONDS);
+
   const newToken = await runInsertQuery(userId, expiresAt);
+
   return newToken;
 
   async function runInsertQuery(userId, expiresAt) {
@@ -24,6 +26,7 @@ async function create(userId) {
       ;`,
       values: [userId, expiresAt],
     });
+
     return results.rows[0];
   }
 }
@@ -113,6 +116,7 @@ async function activeUserByUserId(userId) {
   const activatedUser = await user.setFeatures(userId, [
     "create:session",
     "read:session",
+    "update:user",
   ]);
   return activatedUser;
 }
@@ -123,6 +127,7 @@ const activation = {
   findOneValidById,
   markTokenAsUsed,
   activeUserByUserId,
+  EXPIRATION_IN_MILISECONDS,
 };
 
 export default activation;
