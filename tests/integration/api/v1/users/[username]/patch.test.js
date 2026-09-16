@@ -2,6 +2,7 @@ import { version as uuidVersion } from "uuid";
 import orchestrator from "../../orchestrator.js";
 import user from "models/user.js";
 import password from "models/password.js";
+import { describe } from "node_modules/eslint/lib/rule-tester/rule-tester.js";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
@@ -179,7 +180,7 @@ describe("PATCH /api/v1/users/[username]", () => {
       });
     });
 
-    test("With unique 'username'", async () => {
+    test("With unique 'username' 2", async () => {
       const createdUser = await orchestrator.createUser();
       const activatedUser = await orchestrator.activateUser(createdUser);
       const sessionObject = await orchestrator.createSession(activatedUser.id);
@@ -307,6 +308,54 @@ describe("PATCH /api/v1/users/[username]", () => {
       );
 
       expect(incorrectPasswordMatch).toBe(false);
+    });
+  });
+
+  describe("Privileged User", () => {
+    test("With 'update:user:others' targeting 'defaultUser'", async () => {
+      const privilegedUser = await orchestrator.createUser();
+      const activatedPrivilegedUser =
+        await orchestrator.activateUser(privilegedUser);
+      await orchestrator.addFeaturesToUser(privilegedUser, [
+        "update:user:others",
+      ]);
+      const sessionPrivilegedUserObject = await orchestrator.createSession(
+        activatedPrivilegedUser.id,
+      );
+
+      const defaultUser = await orchestrator.createUser();
+
+      const response = await fetch(
+        `http://localhost:3000/api/v1/users/${defaultUser.username}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            cookie: `session_id=${sessionPrivilegedUserObject.token}`,
+          },
+          body: JSON.stringify({
+            username: "AlteradoPorPrivilegiado",
+          }),
+        },
+      );
+      expect(response.status).toBe(200);
+
+      const responseBody = await response.json();
+
+      expect(responseBody).toEqual({
+        id: responseBody.id,
+        username: "AlteradoPorPrivilegiado",
+        email: defaultUser.email,
+        password: defaultUser.password,
+        features: ["read:activation_token"],
+        created_at: responseBody.created_at,
+        updated_at: responseBody.updated_at,
+      });
+
+      expect(uuidVersion(responseBody.id)).toBe(4);
+      expect(Date.parse(responseBody.created_at)).not.toBeNaN();
+      expect(Date.parse(responseBody.updated_at)).not.toBeNaN();
+      expect(responseBody.updated_at > responseBody.created_at).toBe(true);
     });
   });
 });
