@@ -37,15 +37,9 @@ describe("PATCH /api/v1/activations/[token_id]", () => {
         now: new Date(Date.now() - activation.EXPIRATION_IN_MILISECONDS),
       });
 
-      console.log(`\n\n `);
-
       const createdUser = await orchestrator.createUser();
 
-      console.log(`\n\n >>> User Id: ${createdUser.id} \n\n`);
-
       const expiredActivationToken = await activation.create(createdUser.id);
-
-      console.log(`\n\n >>> Token: ${expiredActivationToken} \n\n`);
 
       jest.useRealTimers();
 

@@ -61,7 +61,6 @@ async function createUser(userObject) {
 }
 
 async function activateUser(inactiveUser) {
-  `\n\n>> Inactive User = ${inactiveUser.id}\n\n`;
   return await activation.activeUserByUserId(inactiveUser.id);
 }
 
