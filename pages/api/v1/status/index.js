@@ -1,9 +1,11 @@
 import { createRouter } from "next-connect";
 import database from "infra/database.js";
 import controller from "infra/controller.js";
+import authorization from "models/authorization";
 
 const router = createRouter();
 
+router.use(controller.injectAnonymousOrUser);
 router.get(getHandler);
 
 export default router.handler(controller.errorHandlers);
@@ -34,7 +36,7 @@ async function getHandler(request, response) {
     dataBaseOpenedConnectionsResult.rows[0].count;
   console.log("dataBaseOpenedConnections:", dataBaseOpenedConnections);
 
-  response.status(200).json({
+  const databaseStatus = {
     update_at: updateAt,
     dependencies: {
       database: {
@@ -43,5 +45,22 @@ async function getHandler(request, response) {
         opened_connections: dataBaseOpenedConnections,
       },
     },
-  });
+  };
+  const userTryingToGet = request.context.user;
+
+  let feature = userTryingToGet.features;
+
+  if (feature.includes("read:status:database_version")) {
+    feature = "read:status:database_version";
+  } else {
+    feature = "read:status";
+  }
+
+  const secureOutputValues = authorization.filterStatusOutput(
+    feature,
+    databaseStatus,
+  );
+
+  console.log(`\n Secure: ${secureOutputValues}`);
+  response.status(200).json(secureOutputValues);
 }
