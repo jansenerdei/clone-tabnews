@@ -23,7 +23,6 @@ describe("infra/email.js", () => {
     });
 
     const lastEmail = await orchestrator.getLastEmail();
-    console.log(lastEmail);
     expect(lastEmail.sender).toBe("<contato@jansenerdei.com.br>");
     expect(lastEmail.recipients[0]).toBe("<jansen@email.com>");
     expect(lastEmail.subject).toBe("Último email");
