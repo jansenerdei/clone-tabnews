@@ -50,13 +50,14 @@ async function getHandler(request, response) {
 
   let feature = userTryingToGet.features;
 
-  if (feature.includes("read:status:database_version")) {
-    feature = "read:status:database_version";
+  if (feature.includes("read:status:all")) {
+    feature = "read:status:all";
   } else {
     feature = "read:status";
   }
 
-  const secureOutputValues = authorization.filterStatusOutput(
+  const secureOutputValues = authorization.filterOutput(
+    userTryingToGet,
     feature,
     databaseStatus,
   );

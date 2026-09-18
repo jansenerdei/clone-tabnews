@@ -1,4 +1,29 @@
+import { InternalServerError } from "infra/errors.js";
+
+const availableFeatures = [
+  // User
+  "create:user",
+  "read:user",
+  "read:user:self",
+  "update:user",
+  "update:user:others",
+  // Session
+  "create:session",
+  "read:session",
+  // Activation_Token
+  "read:activation_token",
+  // Migrations
+  "create:migrations",
+  "read:migrations",
+  // Status
+  "read:status",
+  "read:status:all",
+];
+
 function can(user, feature, resource) {
+  validateUser(user);
+  validateFeature(feature);
+
   let authorized = false;
 
   if (user.features.includes(feature)) {
@@ -17,6 +42,10 @@ function can(user, feature, resource) {
 }
 
 function filterOutput(user, feature, resource) {
+  validateUser(user);
+  validateFeature(feature);
+  validateResource(resource);
+
   if (feature === "read:user") {
     return {
       id: resource.id,
@@ -70,9 +99,7 @@ function filterOutput(user, feature, resource) {
       timestamp: migrations.timestamp,
     }));
   }
-}
 
-function filterStatusOutput(feature, resource) {
   if (feature === "read:status") {
     return {
       update_at: resource.update_at,
@@ -85,7 +112,7 @@ function filterStatusOutput(feature, resource) {
     };
   }
 
-  if (feature === "read:status:database_version") {
+  if (feature === "read:status:all") {
     return {
       update_at: resource.update_at,
       dependencies: {
@@ -99,10 +126,36 @@ function filterStatusOutput(feature, resource) {
   }
 }
 
+function validateUser(user) {
+  if (!user || !user.features) {
+    throw new InternalServerError({
+      message: "É necessário fornecer `user` no model `authorization`!",
+    });
+  }
+}
+
+function validateFeature(feature) {
+  if (!feature || !availableFeatures.includes(feature)) {
+    throw new InternalServerError({
+      message:
+        "É necessário fornecer uma `feature` conhecida no model `authorization`!",
+    });
+  }
+}
+
+function validateResource(resource) {
+  if (!resource) {
+    throw new InternalServerError({
+      message:
+        "É necessário fornecer uma `resource` em `authorization.filterOutput`!",
+    });
+  }
+}
+
 const authorization = {
   can,
   filterOutput,
-  filterStatusOutput,
+  validateUser,
 };
 
 export default authorization;
