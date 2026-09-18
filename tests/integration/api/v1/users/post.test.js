@@ -18,9 +18,9 @@ describe("POST /api/v1/users", () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          username: "userValido",
-          email: "email@email.com",
-          password: "senha123",
+          username: "userValido", //ggignore
+          email: "email@email.com", //ggignore
+          password: "senha123", //ggignore
         }),
       });
       expect(response.status).toBe(201);
@@ -62,9 +62,9 @@ describe("POST /api/v1/users", () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          username: "emailduplicado1",
-          email: "duplicado@email.com",
-          password: "senha123",
+          username: "emailduplicado1", //ggignore
+          email: "duplicado@email.com", //ggignore
+          password: "senha123", //ggignore
         }),
       });
       expect(response1.status).toBe(201);
@@ -98,9 +98,9 @@ describe("POST /api/v1/users", () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          username: "usernameduplicado",
-          email: "userduplicado1@email.com",
-          password: "senha123",
+          username: "usernameduplicado", //ggignore
+          email: "userduplicado1@email.com", //ggignore
+          password: "senha123", //ggignore
         }),
       });
       expect(response1.status).toBe(201);
@@ -142,9 +142,9 @@ describe("POST /api/v1/users", () => {
           cookie: `session_id=${user1SessionObject.token}`,
         },
         body: JSON.stringify({
-          username: "usariologado",
-          email: "usuariologado@email.com",
-          password: "senha123",
+          username: "usariologado", //ggignore
+          email: "usuariologado@email.com", //ggignore
+          password: "senha123", //ggignore
         }),
       });
       expect(user2Response.status).toBe(403);
