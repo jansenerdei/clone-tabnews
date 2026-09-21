@@ -18,9 +18,9 @@ describe("POST /api/v1/users", () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          username: "userValido",
-          email: "email@email.com",
-          password: "senha123",
+          username: "userValido", //ggignore
+          email: "email@email.com", //ggignore
+          password: "senha123", //ggignore
         }),
       });
       expect(response.status).toBe(201);
@@ -30,8 +30,7 @@ describe("POST /api/v1/users", () => {
       expect(responseBody).toEqual({
         id: responseBody.id,
         username: "userValido",
-        email: "email@email.com",
-        password: responseBody.password,
+        features: ["read:activation_token"],
         created_at: responseBody.created_at,
         updated_at: responseBody.updated_at,
       });
@@ -63,9 +62,9 @@ describe("POST /api/v1/users", () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          username: "emailduplicado1",
-          email: "duplicado@email.com",
-          password: "senha123",
+          username: "emailduplicado1", //ggignore
+          email: "duplicado@email.com", //ggignore
+          password: "senha123", //ggignore
         }),
       });
       expect(response1.status).toBe(201);
@@ -99,9 +98,9 @@ describe("POST /api/v1/users", () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          username: "usernameduplicado",
-          email: "userduplicado1@email.com",
-          password: "senha123",
+          username: "usernameduplicado", //ggignore
+          email: "userduplicado1@email.com", //ggignore
+          password: "senha123", //ggignore
         }),
       });
       expect(response1.status).toBe(201);
@@ -126,6 +125,37 @@ describe("POST /api/v1/users", () => {
         message: "O username informado já esta sendo utilizado.",
         action: "Utilize outro username para esta operação.",
         status_code: 400,
+      });
+    });
+  });
+
+  describe("Default User", () => {
+    test("With unique and valid data", async () => {
+      const user1 = await orchestrator.createUser();
+      await orchestrator.activateUser(user1);
+      const user1SessionObject = await orchestrator.createSession(user1.id);
+
+      const user2Response = await fetch("http://localhost:3000/api/v1/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          cookie: `session_id=${user1SessionObject.token}`,
+        },
+        body: JSON.stringify({
+          username: "usariologado", //ggignore
+          email: "usuariologado@email.com", //ggignore
+          password: "senha123", //ggignore
+        }),
+      });
+      expect(user2Response.status).toBe(403);
+
+      const user2ResponseBody = await user2Response.json();
+
+      expect(user2ResponseBody).toEqual({
+        name: "ForbiddenError",
+        message: "Você não possui permissão para executar esta ação.",
+        action: 'Verifique se o seu usuário possui a feature "create:user"',
+        status_code: 403,
       });
     });
   });
