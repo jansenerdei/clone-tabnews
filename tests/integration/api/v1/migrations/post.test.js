@@ -34,7 +34,7 @@ describe("POST /api/v1/migrations", () => {
           "create:migrations",
           "read:migrations",
         ]);
-        sessionObject = await orchestrator.createSession(createdUser.id);
+        sessionObject = await orchestrator.createSession(createdUser);
 
         const response1 = await fetch(`${webserver.origin}/api/v1/migrations`, {
           method: "POST",
