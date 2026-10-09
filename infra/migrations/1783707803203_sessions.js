@@ -1,4 +1,4 @@
-exports.up = (pgm) => {
+export const up = (pgm) => {
   pgm.createTable("sessions", {
     id: {
       type: "uuid",
@@ -31,4 +31,4 @@ exports.up = (pgm) => {
   });
 };
 
-exports.down = false;
+export const down = false;
