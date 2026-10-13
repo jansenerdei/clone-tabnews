@@ -1,4 +1,4 @@
-import bcryptjs from "bcrypt";
+import bcryptjs from "bcryptjs";
 
 async function hash(password) {
   const rounds = getNumberOfRounds();

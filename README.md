@@ -2,7 +2,7 @@
 
 Implemntação do tab news para treinamento e desenvolvimento de habilidades
 
-# Organização de Arquivos
+## Organização de Arquivos
 
 📦root/
 ├──📂pages/
